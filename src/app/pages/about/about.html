@@ -1,0 +1,29 @@
+<div class="about-container">
+  <h1>About Us</h1>
+  
+  <section class="intro">
+    <p>Welcome to our About page! We're passionate about building modern web applications with Angular.</p>
+  </section>
+
+  <section class="mission">
+    <h2>Our Mission</h2>
+    <p>{{ mission }}</p>
+  </section>
+
+  <section class="team">
+    <h2>Our Team</h2>
+    <div class="team-members">
+      @for (member of teamMembers; track member.name) {
+        <div class="team-member">
+          <h3>{{ member.name }}</h3>
+          <p class="role">{{ member.role }}</p>
+          <p>{{ member.bio }}</p>
+        </div>
+      }
+    </div>
+  </section>
+
+  <div class="back-link">
+    <a routerLink="/" class="nav-button">Back to Home</a>
+  </div>
+</div>

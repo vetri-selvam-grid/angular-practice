@@ -1,59 +1,159 @@
-# Angular
+# Angular Routing Practice
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.0.5.
+This project demonstrates modern Angular routing concepts using standalone components and the latest Angular features.
 
-## Development server
+## Table of Contents
+- [Project Overview](#project-overview)
+- [Routing Configuration](#routing-configuration)
+- [Decorators Used](#decorators-used)
+- [Components](#components)
+- [Running the Application](#running-the-application)
 
-To start a local development server, run:
+## Project Overview
 
-```bash
-ng serve
+This application showcases a multi-page Angular app with three main pages:
+- **Home** (`/`) - Landing page with feature highlights
+- **About** (`/about`) - Team information with dynamic content
+- **Contact** (`/contact`) - Interactive contact form with validation
+
+## Routing Configuration
+
+### Routes Definition (`app.routes.ts`)
+
+Angular routing is configured using the `Routes` array, which maps URL paths to components:
+
+```typescript
+export const routes: Routes = [
+  { path: '', component: Home },          // Default/root route
+  { path: 'about', component: About },    // /about route
+  { path: 'contact', component: Contact }, // /contact route
+  { path: '**', redirectTo: '' }          // Wildcard for 404 handling
+];
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+**Key Concepts:**
+- **`path`**: URL path segment (empty string `''` represents the root)
+- **`component`**: Component to render when path matches
+- **`redirectTo`**: Redirects to another route
+- **`**`**: Wildcard route that catches all unmatched URLs
 
-## Code scaffolding
+### Router Providers (`app.config.ts`)
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+Modern Angular uses `provideRouter()` instead of `RouterModule`:
 
-```bash
-ng generate component component-name
+```typescript
+export const appConfig: ApplicationConfig = {
+  providers: [
+    provideRouter(routes),  // Provides routing functionality
+    // ... other providers
+  ]
+};
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+**Benefits of `provideRouter()`:**
+- Works with standalone components
+- Simplified configuration
+- Better tree-shaking for smaller bundle sizes
 
-```bash
-ng generate --help
+### Router Outlet & Links (`app.ts`)
+
+The main app component uses routing directives:
+
+```typescript
+imports: [RouterOutlet, RouterLink, RouterLinkActive]
 ```
 
-## Building
+- **`RouterOutlet`**: Placeholder where routed components are rendered
+- **`RouterLink`**: Directive for navigation (replaces `href`)
+- **`RouterLinkActive`**: Adds CSS class to active route links
 
-To build the project run:
-
-```bash
-ng build
+**Template usage:**
+```html
+<router-outlet></router-outlet>  <!-- Components render here -->
+<a routerLink="/" routerLinkActive="active">Home</a>
+<a routerLink="/about" routerLinkActive="active">About</a>
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+## Decorators Used
 
-## Running unit tests
+### `@Component` Decorator
 
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
+Every component uses the `@Component` decorator to define metadata:
 
-```bash
-ng test
+```typescript
+@Component({
+  selector: 'app-root',           // HTML tag to use this component
+  imports: [RouterOutlet, ...],   // Standalone component dependencies
+  templateUrl: './app.html',      // External HTML template
+  styleUrl: './app.css'           // Component-specific styles
+})
 ```
 
-## Running end-to-end tests
+**Why Standalone Components?**
+- No need for `NgModule`
+- Simpler, more modular architecture
+- Better code splitting and lazy loading
+- Recommended approach in Angular 17+
 
-For end-to-end (e2e) testing, run:
+## Components
 
-```bash
-ng e2e
+### Home Component
+- Displays welcome message and feature list
+- Navigation links to other pages
+- Uses `RouterLink` for navigation
+
+### About Component
+- Mission statement section
+- Dynamic team member list using `@for` control flow
+- Demonstrates data binding and iteration
+
+**Modern Control Flow:**
+```typescript
+@for (member of teamMembers; track member.name) {
+  <div>{{ member.name }}</div>
+}
 ```
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+### Contact Component
+- Interactive form with validation
+- Two-way data binding using `[(ngModel)]`
+- Form submission handling
+- Uses `FormsModule` for template-driven forms
 
-## Additional Resources
+**Key Features:**
+- Form validation with `required` attributes
+- Dynamic button state (`[disabled]`)
+- Event handling with `(ngSubmit)`
+- Success message display using `@if`
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+## Routing Flow
+
+```
+User clicks link → RouterLink directive
+    ↓
+Angular Router matches URL to route
+    ↓
+Router loads corresponding component
+    ↓
+Component renders in <router-outlet>
+    ↓
+RouterLinkActive highlights active link
+```
+
+## Modern Angular Features Used
+
+1. **Standalone Components** - No NgModule required
+2. **New Control Flow** - `@for` instead of `*ngFor`
+3. **Signals** - `signal()` for reactive state management
+4. **provideRouter()** - Functional router setup
+5. **Component imports** - Direct dependency management
+
+## Learning Resources
+
+- [Angular Routing Guide](https://angular.dev/guide/routing)
+- [Standalone Components](https://angular.dev/guide/components/importing)
+- [Built-in Control Flow](https://angular.dev/guide/templates/control-flow)
+
+---
+
+**Note**: This project uses Angular 17+ features and follows modern best practices for building scalable web applications.
